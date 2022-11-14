@@ -1,0 +1,17 @@
+#dates {    
+    layout: grid;
+    grid-size: 7;
+    grid-gutter: 1 2;
+    grid-columns: 1fr;
+    grid-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    margin: 1 2;
+    min-height: 10;
+    min-width: 13;
+}
+
+SectionTitle {
+    padding: 1 2;
+    background: $boost;
+    text-align: center;
+    text-style: bold;
+}
