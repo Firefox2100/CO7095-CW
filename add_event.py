@@ -11,13 +11,16 @@ from textual.widgets import (
 
 class AddEvent(Container):
     def compose(self) -> ComposeResult:
-        yield Static("Time", classes="label")
-        yield Input(placeholder="Time", id='input_time')
-        yield Static("Title", classes="label")
-        yield Input(placeholder="Title", id='input_title')
-        yield Static("Urgency", classes="label")
-        yield Input(placeholder="Urgency", id='input_urgency')
-        yield Button("Add", variant="primary", classes="add event button", id='addevent')
+        yield Container(
+            Input(placeholder="Time", id='input_time'),
+
+       
+            Input(placeholder="Title", id='input_title'),
+            Input(placeholder="Urgency", id='input_urgency'),
+            id='event_inputs'
+        )
+        yield Button("Add", variant="primary", classes="add_event_button", id='addevent')
+        
 
     def get_value(self) -> dict:
         result = {'time': self.query_one("#input_time").value, 'title': self.query_one("#input_title").value,

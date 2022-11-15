@@ -26,11 +26,20 @@ class Calendar(App):
 
     def compose(self) -> ComposeResult:
         yield Container(
-            Header(show_clock=True),
-            event_list.EventList(),
-            add_event.AddEvent(),
-            dates.Dates(self.month, self.year, id='dates'),
-            login.Login()
+            Header(name='Puppy',show_clock=True, classes='app_header'),
+            Container(
+            Container( 
+                event_list.EventList(),
+                login.Login(),
+                id='right_side'
+            ),
+            Container(
+                dates.Dates(self.month, self.year, id='dates'),
+                add_event.AddEvent(),
+                id='left_side'
+            ))
+           
+            
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -51,4 +60,5 @@ class Calendar(App):
 
 
 if __name__ == '__main__':
-    Calendar().run()
+    app = Calendar()
+    app.run()

@@ -1,17 +1,80 @@
-#dates {    
-    layout: grid;
-    grid-size: 7;
-    grid-gutter: 1 2;
-    grid-columns: 1fr;
-    grid-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-    margin: 1 2;
-    min-height: 10;
-    min-width: 13;
-}
-
-SectionTitle {
-    padding: 1 2;
-    background: $boost;
-    text-align: center;
-    text-style: bold;
-}
+    ClickableDates {
+        layout: grid;
+        grid-size: 7;
+        grid-gutter: 0 1;
+        grid-columns: 1fr;
+        grid-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+        margin: 1 2;
+        height: 60%;
+        padding: 0 1;
+    }
+    
+    Dates {
+        height: 70%;
+        dock: top;
+    }
+    
+    #left_side {
+        dock: left;
+        width: 50%;
+    }
+    
+    #right_side {
+        align: center middle;
+    }
+    
+    #column {
+        height: auto;
+        min-height: 100vh;
+        align: center top;
+    }
+    
+    #section {
+        height: auto;
+        min-width: 40;
+        margin: 1 2 4 2;
+    }
+    
+    #date_banner {
+        height: 20%;
+    }
+    
+    #last_month {
+        dock: left;
+    }
+    
+    #month_name {
+        content-align: center middle;
+        text-style: bold;
+    }
+    
+    #next_month {
+        dock: right
+    }
+    
+    EventList {
+        height: 40%;
+    }
+    
+    AddEvent {
+        dock: bottom;
+        height: 30%;
+    }
+    
+    Login {
+        height: 40%;
+    }
+    
+    #daily_events_banner {
+        height: 20%;
+    }
+    
+    #event_inputs {
+        dock: left;
+        width: 70%;
+    }
+    
+    #add_event_button {
+        dock: right;
+        width: 30%;
+    }
