@@ -22,11 +22,10 @@ class EventTable(Static):
         box=box.SIMPLE,
     )
 
-    def __init__(self, id=None):
+    def __init__(self):
         # Adding titles
         super().__init__()
         self.add_title()
-        self.id = id
 
     def add_title(self):
         self.events.add_column(from_markup("[green]Time"), style="green", no_wrap=True)
