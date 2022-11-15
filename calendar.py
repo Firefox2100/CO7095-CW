@@ -17,7 +17,7 @@ import login
 
 class Calendar(App):
     CSS_PATH = "calendar.css"
-    TITLE = "Textual Demo"
+    TITLE = "CALENDAR"
 
     today = datetime.datetime.now()
 
@@ -26,20 +26,19 @@ class Calendar(App):
 
     def compose(self) -> ComposeResult:
         yield Container(
-            Header(name='Puppy',show_clock=True, classes='app_header'),
+            Header(name='Puppy', show_clock=True, classes='app_header'),
             Container(
-            Container( 
-                event_list.EventList(),
-                login.Login(),
-                id='right_side'
-            ),
-            Container(
-                dates.Dates(self.month, self.year, id='dates'),
-                add_event.AddEvent(),
-                id='left_side'
-            ))
-           
-            
+                Container(
+                    event_list.EventList(),
+                    login.Login(),
+                    id='right_side'
+                ),
+                Container(
+                    dates.Dates(self.month, self.year, id='dates'),
+                    add_event.AddEvent(),
+                    id='left_side'
+                ))
+
         )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

@@ -71,14 +71,10 @@ class DatesBanner(Container):
         self.id = id
 
     def compose(self) -> ComposeResult:
-        
         yield Button("<-", variant="primary", classes="last month button", id='last_month')
         yield Static(month_name.get(10), classes='month name', id='month_name')
         yield Button("->", variant="primary", classes="next month button", id='next_month')
 
-        
-       
-     
 
 class ClickableDates(Container):
     month: int
@@ -106,7 +102,7 @@ class ClickableDates(Container):
             yield Static(' ', classes='calendar_place_holder')
 
         for i in range(1, daysinmonth + 1):
-            yield Button(str(i), id=('date_' + str(i)), classes='dates')
+            yield Button(str(i), id=('date_' + str(i)), classes='dates_button')
 
 
 class Dates(Container):
@@ -129,7 +125,7 @@ class DatesTest(App):
 
     def compose(self) -> ComposeResult:
         # yield DatesBanner(11, id='date_banner')
-        
+
         yield Dates(11, 2022, id='dates')
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
