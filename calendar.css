@@ -54,7 +54,7 @@ Dates {
 
 EventList {
     dock: top;
-    height: 85;
+    height: 85%;
 }
 
 AddEvent {
@@ -76,12 +76,36 @@ Login {
     width: 70%;
 }
 
-#add_event_button {
+#addevent {
     dock: right;
     width: 30%;
+    height: 100%;
 }
 
 #dates_button {
     width: 10%;
     height: 15%;
+}
+
+#login_input {
+    width: 70%;
+    dock: left;
+}
+
+#login_button {
+    width: 30%;
+    dock: right;
+    height: 100%;
+}
+
+#event_table {
+    height: 80%;
+}
+
+#username {
+    height: 35%;
+}
+
+#password {
+    height: 35%;
 }

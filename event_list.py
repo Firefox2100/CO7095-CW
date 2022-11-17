@@ -10,10 +10,19 @@ from textual.widgets import (
     Static,
 )
 
+import mysql.connector
+mydb = mysql.connector.connect(
+    host="localhost",
+    port="3306",
+    user="patrick",
+    password="Wangyunze001021!",
+    database="co7095"
+)
+
 from_markup = Text.from_markup
 
 
-class EventTable(Static):
+def generate_header() -> Table:
     events = Table(
         show_edge=False,
         show_header=True,
@@ -21,52 +30,32 @@ class EventTable(Static):
         row_styles=["none", "dim"],
         box=box.SIMPLE,
     )
-
-    def __init__(self):
-        # Adding titles
-        super().__init__()
-        self.add_title()
-
-    def add_title(self):
-        self.events.add_column(from_markup("[green]Time"), style="green", no_wrap=True)
-        self.events.add_column(from_markup("[blue]Title"), style="blue")
-        self.events.add_column(
-            from_markup("[magenta]Urgency"),
-            style="magenta",
-            justify="right",
-            no_wrap=True,
-        )
-
-    def add_event(self, time: str, title: str, urgency: str):
-        self.events.add_row(
-            time,
-            title,
-            urgency,
-        )
-
-    def to_table(self) -> Table:
-        return self.events
-
-    # TODO: Implement this
-    def fetch_events(self, date):
-        pass
+    events.add_column(from_markup("[green]Time"), style="green", no_wrap=True, ratio=1)
+    events.add_column(from_markup("[blue]Title"), style="blue", ratio=3)
+    events.add_column(
+        from_markup("[red]Urgency"),
+        style="magenta",
+        justify="right",
+        no_wrap=True,
+        ratio=1,
+    )
+    return events
 
 
 class EventList(Container):
-    event_table = EventTable()
-
     def compose(self) -> ComposeResult:
-        # self.event_table.fetch_events()
-        if self.event_table.events.row_count == 0:
-            self.event_table.add_event("None", "None", "None")
+        yield Static('Daily events', classes='daily_events_banner', id='daily_events_banner')
+        yield Static(generate_header(), classes='event_table', id='event_table')
 
-        yield Static('Daily events', classes='daily_events_banner')
-        yield Static(self.event_table.to_table())
+    def fetch_event(self, year: int, month: int, date: int):
+        self.event_table.fetch_events(year=year, month=month, date=date)
 
 
 class EventListTest(App):
+    event_list = EventList()
+
     def compose(self) -> ComposeResult:
-        yield EventList()
+        yield self.event_list
 
 
 if __name__ == '__main__':

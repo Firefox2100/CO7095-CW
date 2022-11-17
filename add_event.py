@@ -16,9 +16,10 @@ class AddEvent(Container):
 
             Input(placeholder="Title", id='input_title'),
             Input(placeholder="Urgency", id='input_urgency'),
-            id='event_inputs'
+            id='event_inputs',
+            classes='event_input',
         )
-        yield Button("Add", variant="primary", classes="add_event_button", id='addevent')
+        yield Button("Add", variant="primary", classes="addevent", id='addevent')
 
     def get_value(self) -> dict:
         result = {'time': self.query_one("#input_time").value, 'title': self.query_one("#input_title").value,
