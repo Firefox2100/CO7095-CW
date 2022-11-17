@@ -105,7 +105,7 @@ class Calendar(App):
         events = event_list.generate_header()
 
         begin_date = "'" + str(year) + "-" + str(month) + "-" + str(date) + "'"
-        end_date = "'" + str(year) + "-" + str(month) + "-" + str(date + 1) + "'"
+        end_date = "'" + str(year) + "-" + str(month) + "-" + str(date) + " 23：59：59'"
 
         mycursor = self.mydb.cursor()
         sql_query = "SELECT * FROM events WHERE user = '" + self.user + "' AND date >= " + begin_date + "AND date <" + end_date
@@ -116,7 +116,7 @@ class Calendar(App):
             events.add_row(r[1].strftime("%H:%M"), r[2], r[3])
 
         self.query_one('#event_table').update(events)
-        self.query_one('#daily_events_banner').update('Daily events on ' + str(self.today.day) + '/' + str(self.month))
+        self.query_one('#daily_events_banner').update('Daily events on ' + str(self.selected_date) + '/' + str(self.month))
 
 
 if __name__ == '__main__':
