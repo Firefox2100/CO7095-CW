@@ -3,11 +3,10 @@ import mysql.connector
 from datetime import datetime
 from uuid import uuid4
 
-
 mydb = mysql.connector.connect(
   host="localhost",
-  user="dbadmin",
-  password="adminpassword",
+  user="patrick",
+  password="Wangyunze001021!",
   database="co7095"
 )
 
@@ -23,7 +22,7 @@ def get_events(usertoken, date):
         end_date = "'" + str(selected_date.year) + "-" + str(selected_date.month) + "-" + str(selected_date.day) + " 23：59：59'"
 
         mycursor = mydb.cursor()
-        mycursor.execute("SELECT * FROM users WHERE 'token' = '" + usertoken + "'")
+        mycursor.execute("SELECT * FROM users WHERE token = '" + usertoken + "';")
         myresult = mycursor.fetchall()
 
         if len(myresult) == 0:
@@ -34,8 +33,9 @@ def get_events(usertoken, date):
         myresult = mycursor.fetchall()
 
         return jsonify(myresult), 200
+
     except Exception as e:
-        return f"An Error Occured: {e}"
+        return f"An Error Occured: {e}", 400
 
 
 @app.route('/add/<usertoken>', methods=['POST'])
@@ -43,26 +43,25 @@ def add_event(usertoken):
     try:
         data = request.get_json()
 
-        temp = json.loads(data)
-
-        title = temp['title']
-        time = temp['time']
-        urgency = temp['urgency']
+        title = data['title']
+        time = data['time']
+        urgency = data['urgency']
 
         mycursor = mydb.cursor()
-        mycursor.execute("SELECT * FROM users WHERE `token` = `" + usertoken + "`")
+        mycursor.execute("SELECT * FROM users WHERE token = '" + usertoken + "';")
         myresult = mycursor.fetchall()
 
         if len(myresult) == 0:
             return "User token error", 403
         
-        sql_query = "INSERT INTO `events`(`date`, `title`, `urgency`, `user`) VALUES ( %s , %s , %s , %s );"
+        sql_query = "INSERT INTO events (date, title, urgency, user) VALUES ( %s , %s , %s , %s );"
 
         mycursor.execute(sql_query, (time, title, urgency, usertoken))
+        mydb.commit()
         return 'Success', 200
 
     except Exception as e:
-        return f"An Error Occurred: {e}"
+        return f"An Error Occurred: {e}", 400
 
 
 @app.route('/register', methods=['POST'])
@@ -70,25 +69,24 @@ def register():
     try:
         data = request.get_json()
 
-        temp = json.loads(data)
-
-        username = temp['username']
-        password = temp['password']
+        username = data['username']
+        password = data['password']
 
         mycursor = mydb.cursor()
-        mycursor.execute("SELECT * FROM users WHERE `username` = `" + username + "`")
+        mycursor.execute("SELECT * FROM users WHERE `username` = '" + username + "';")
         myresult = mycursor.fetchall()
 
         for x in myresult:
             return 'User already exist', 403
         
-        rand_token = uuid4()
+        rand_token = str(uuid4())
 
-        mycursor.execute("INSERT INTO `users`(`username`, `password`, `token`) VALUES ( %s , %s , %s , %s );", (username, password, rand_token))
-        return 'Success', 200
+        mycursor.execute("INSERT INTO users (username, password, token) VALUES ( %s , %s , %s);", (username, password, rand_token))
+        mydb.commit()
+        return rand_token, 200
 
     except Exception as e:
-        return f"An Error Occurred: {e}"
+        return f"An Error Occurred: {e}", 400
 
 
 @app.route('/login', methods=['POST'])
@@ -96,13 +94,11 @@ def login():
     try:
         data = request.get_json()
 
-        temp = json.loads(data)
-
-        username = temp['username']
-        password = temp['password']
+        username = data['username']
+        password = data['password']
 
         mycursor = mydb.cursor()
-        mycursor.execute("SELECT * FROM users WHERE 'username' = '" + username + "'")
+        mycursor.execute("SELECT * FROM users WHERE username = '" + username + "';")
         myresult = mycursor.fetchall()
 
         for x in myresult:
@@ -114,7 +110,7 @@ def login():
         return "User doesn't exist", 403
 
     except Exception as e:
-        return f"An Error Occurred: {e}"
+        return f"An Error Occurred: {e}", 400
 
 
 if __name__ == '__main__':

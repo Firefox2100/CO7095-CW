@@ -7,6 +7,7 @@ ClickableDates {
     margin: 1 2;
     height: 90%;
     padding: 0 1;
+    border: white;
 }
 
 Dates {
@@ -21,6 +22,7 @@ Dates {
 
 #right_side {
     align: center middle;
+    border: blue;
 }
 
 #column {
@@ -54,7 +56,7 @@ Dates {
 
 EventList {
     dock: top;
-    height: 85%;
+    height: 75%;
 }
 
 AddEvent {
@@ -92,10 +94,22 @@ Login {
     dock: left;
 }
 
-#login_button {
+#login_bc {
     width: 30%;
     dock: right;
     height: 100%;
+}
+
+#login_button {
+    width: 100%;
+    dock: top;
+    height: 50%;
+}
+
+#register_button {
+    width: 100%;
+    dock: bottom;
+    height: 50%;
 }
 
 #event_table {

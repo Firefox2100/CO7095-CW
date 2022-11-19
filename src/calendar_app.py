@@ -1,5 +1,6 @@
 from __future__ import annotations
 import datetime
+import hashlib
 
 from textual.app import App, ComposeResult
 from textual.containers import Container
@@ -7,14 +8,14 @@ from textual.reactive import var
 from textual.widgets import (
     Button,
     Header,
+    Static,
 )
 
 import event_list
 import add_event
 import dates
 import login
-
-import mysql.connector
+import backend_functions as bf
 
 
 class Calendar(App):
@@ -23,7 +24,7 @@ class Calendar(App):
     host = "localhost"
     user = ""
     password = ""
-    mydb = None
+    uid = ""
 
     today = datetime.datetime.now()
 
@@ -33,10 +34,11 @@ class Calendar(App):
 
     def compose(self) -> ComposeResult:
         yield Container(
-            Header(name='Puppy', show_clock=True, classes='app_header'),
+            Header(show_clock=True, classes='app_header'),
             Container(
                 Container(
                     event_list.EventList(),
+                    Static("Message: None", id='messagebox'),
                     login.Login(),
                     id='right_side'
                 ),
@@ -47,28 +49,6 @@ class Calendar(App):
                 ))
 
         )
-
-    def login(self):
-        self.mydb = mysql.connector.connect(
-            host="localhost",
-            port="3306",
-            user=self.user,
-            password=self.password,
-            database="co7095"
-        )
-
-    def add_event(self):
-        time = self.query_one('#input_time').value
-        title = self.query_one('#input_title').value
-        urgency = self.query_one('#input_urgency').value
-
-        mycursor = self.mydb.cursor()
-
-        sql_query = "INSERT INTO `events`(`date`, `title`, `urgency`, `user`) VALUES ( %s , %s , %s , %s );"
-        val = (time, title, urgency, self.user)
-
-        mycursor.execute(sql_query, val)
-        self.mydb.commit()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
@@ -86,15 +66,40 @@ class Calendar(App):
             else:
                 self.month += 1
         elif button_id.startswith('date_'):
-            self.selected_date = int(button_id[5:])
-            self.fetch_events(year=self.year, month=self.month, date=self.selected_date)
+            if self.uid == "":
+                self.show_error(Exception("Please login first"))
+            else:
+                self.selected_date = int(button_id[5:])
+                self.fetch_events(year=self.year, month=self.month, date=self.selected_date)
         elif button_id == 'login_button':
             self.user = self.query_one('#username').value
-            self.password = self.query_one('#password').value
-            self.login()
+            self.password = hashlib.sha256(self.query_one('#password').value.encode())
+            try:
+                self.uid = bf.login(self.user, self.password.hexdigest())
+            except Exception as e:
+                self.show_error(e)
+        elif button_id == 'register_button':
+            self.user = self.query_one('#username').value
+            self.password = hashlib.sha256(self.query_one('#password').value.encode())
+            try:
+                self.uid = bf.register(self.user, self.password.hexdigest())
+            except Exception as e:
+                self.show_error(e)
         elif button_id == 'addevent':
-            self.add_event()
+            if self.uid == "":
+                self.show_error(Exception("Please login first"))
+            else:
+                time = self.query_one('#input_time').value
+                title = self.query_one('#input_title').value
+                urgency = self.query_one('#input_urgency').value
+                try:
+                    bf.add_event(time, title, urgency, self.uid)
+                except Exception as e:
+                    self.show_error()
 
+    def show_error(self, e: Exception):
+        self.query_one('#messagebox').update("Message: " + str(e))
+        pass
 
     def watch_month(self, month: int) -> None:
         self.query_one("#month_name").update(dates.month_name.get(month))
@@ -104,19 +109,16 @@ class Calendar(App):
     def fetch_events(self, year: int, month: int, date: int):
         events = event_list.generate_header()
 
-        begin_date = "'" + str(year) + "-" + str(month) + "-" + str(date) + "'"
-        end_date = "'" + str(year) + "-" + str(month) + "-" + str(date) + " 23：59：59'"
+        try:
+            eventl = bf.get_events(year, month, date, self.uid)
 
-        mycursor = self.mydb.cursor()
-        sql_query = "SELECT * FROM events WHERE user = '" + self.user + "' AND date >= " + begin_date + "AND date <" + end_date
-        mycursor.execute(sql_query)
-        myresult = mycursor.fetchall()
+            for r in eventl:
+                events.add_row(r[1].strftime("%H:%M").time(), r[2], r[3])
 
-        for r in myresult:
-            events.add_row(r[1].strftime("%H:%M"), r[2], r[3])
-
-        self.query_one('#event_table').update(events)
-        self.query_one('#daily_events_banner').update('Daily events on ' + str(self.selected_date) + '/' + str(self.month))
+            self.query_one('#event_table').update(events)
+            self.query_one('#daily_events_banner').update('Daily events on ' + str(self.selected_date) + '/' + str(self.month))
+        except Exception as e:
+            self.show_error(e)
 
 
 if __name__ == '__main__':
