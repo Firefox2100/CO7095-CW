@@ -1,9 +1,10 @@
 textual
 textual-dev
 flask
-pytesy
+pytest
 pytest-flask
 pytest-raises
 pytest-asyncio
 pytest-cov
 coverage
+mysql-connector-python
