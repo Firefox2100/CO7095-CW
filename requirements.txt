@@ -1,0 +1,9 @@
+textual
+textual-dev
+flask
+pytesy
+pytest-flask
+pytest-raises
+pytest-asyncio
+pytest-cov
+coverage
