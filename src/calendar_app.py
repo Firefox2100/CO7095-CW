@@ -113,7 +113,7 @@ class Calendar(App):
             eventl = bf.get_events(year, month, date, self.uid)
 
             for r in eventl:
-                events.add_row(r[1].strftime("%H:%M").time(), r[2], r[3])
+                events.add_row(r[1][17:26], r[2], r[3])
 
             self.query_one('#event_table').update(events)
             self.query_one('#daily_events_banner').update('Daily events on ' + str(self.selected_date) + '/' + str(self.month))
