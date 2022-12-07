@@ -17,7 +17,7 @@ class TestCalendar:
     async def test_compose(self):
         target = calendar_app.Calendar()
         async with target.run_test() as pilot:
-            await asyncio.sleep(1)
+            await asyncio.sleep(3)
             assert pilot.app.query_one('#right_side').id == 'right_side'
 
     @pytest.mark.asyncio
@@ -67,3 +67,14 @@ class TestCalendar:
                 r = random.randint(1, 28)
                 pilot.app.on_button_pressed(FakeButtonEvent("date_" + str(r)))
                 await asyncio.sleep(3)
+
+            pilot.app.on_button_pressed(FakeButtonEvent("date_1"))
+            await asyncio.sleep(3)
+
+            # Add event button
+            pilot.app.query_one('#input_time').value = "2022-12-16 10:00:00"
+            pilot.app.query_one('#input_title').value = "Test"
+            pilot.app.query_one('#input_urgency').value = "None"
+            await asyncio.sleep(1)
+            pilot.app.on_button_pressed(FakeButtonEvent("addevent"))
+            await asyncio.sleep(3)
