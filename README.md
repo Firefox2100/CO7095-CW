@@ -52,4 +52,6 @@ python <path/to>/calendar_app.py
 
 The testing sources are developed for ``pytest 7.2.0``, with ``asyncio``, ``raise`` and ``coverage`` plugin set up. **DO NOT** use ``alt-asyncio`` unless time out has been properly set up.
 
-``pytest`` should be able to recognise the test files, and run the functions automatically.
+``pytest`` should be able to recognise the test files, and run the functions automatically. To run with coverage check, install ``coverage`` with ``pip`` then execute:
+
+``coverage run -m pytest`` with your choice of parameters. By default, this command runs all tests in the ``tests`` folder.
