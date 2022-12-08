@@ -8,7 +8,7 @@ import flask_functions
 mydb = mysql.connector.connect(
   host="localhost",
   user="patrick",
-  password="password",
+  password="Wangyunze001021!",
   database="co7095"
 )
 
